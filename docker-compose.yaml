@@ -1,0 +1,25 @@
+
+# Docker-compose version
+version: '2'
+
+# Define the services/containers to be run
+services:
+
+  # Service name
+  app: 
+    # directory of Dockerfile
+    build: ./ 
+    ports:
+      - "8080:8080"
+    # link this service to database service
+    links:
+      - database 
+    volumes:
+      - ./src/client:/app/src/client
+
+  # Database service name
+  database:
+    # image to build container from
+    image: mongo 
+    ports:
+      - "27018:27017"

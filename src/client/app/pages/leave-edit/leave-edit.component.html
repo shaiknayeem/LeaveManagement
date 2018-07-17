@@ -1,0 +1,61 @@
+<!-- TITLE -->
+<mat-card class="mb-40">
+    <h1>Leave Edit</h1>
+</mat-card>
+
+<mat-card>
+    <div class="card-title">
+        <mat-icon>edit</mat-icon>
+        Edit
+    </div>
+
+    <form #skaffolderForm="ngForm" class="container-fluid">
+        
+        <mat-checkbox [(ngModel)]="item.cancel" name="cancel" id="cancel">Cancel</mat-checkbox>
+        
+        
+        
+        <mat-form-field class="full-width">
+            <input matInput type="date" placeholder="FromDate" [ngModel]="item.fromDate | date: 'y-MM-dd'"  (ngModelChange)="item.fromDate = $event" name="fromDate" id="fromDate" >
+        </mat-form-field>
+        
+        
+        <mat-form-field class="full-width">
+            <input matInput type="text" placeholder="Reason" [(ngModel)]="item.reason"  name="reason" id="reason" >
+        </mat-form-field>
+        
+        
+        <mat-form-field class="full-width">
+            <input matInput type="text" placeholder="Status" [(ngModel)]="item.status"  name="status" id="status" >
+        </mat-form-field>
+        
+        
+        <mat-form-field class="full-width">
+            <input matInput type="date" placeholder="ToDate" [ngModel]="item.toDate | date: 'y-MM-dd'"  (ngModelChange)="item.toDate = $event" name="toDate" id="toDate" >
+        </mat-form-field>
+        
+        
+        <mat-form-field class="full-width">
+            <input matInput type="text" placeholder="Type" [(ngModel)]="item.type"  name="type" id="type" >
+        </mat-form-field>
+        
+        <!-- RELATIONS -->
+        
+        
+        
+        <h2 *ngIf="externalUser[0]">External Relations</h2>
+        
+			<h3 *ngIf="externalUser[0]">User</h3>
+			<mat-list>
+                <mat-list-item *ngFor="let item of externalUser">{{item._id}}</mat-list-item>
+            </mat-list>
+
+
+        <!-- BUTTON BAR -->
+        <div class="mt-40">
+            <button mat-raised-button color="primary" class="pull-right mr-5" (click)="save(skaffolderForm.valid, item)">Save</button>
+            <button mat-raised-button class="pull-right " (click)="goBack()">Back To List</button>
+        </div>
+    </form>
+
+</mat-card>

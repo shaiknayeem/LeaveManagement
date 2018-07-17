@@ -1,0 +1,63 @@
+**** PROPERTIES SKAFFOLDER ****
+{
+    "forEachObj": "db",
+    "overwrite": true,
+    "_partials": []
+}
+**** END PROPERTIES SKAFFOLDER ****
+--
+-- Database: `{{lowercase db.name}}`
+--
+
+CREATE DATABASE IF NOT EXISTS `{{lowercase db.name}}`;
+USE `{{lowercase db.name}}`;
+
+
+-- ENTITIES
+
+{{#db._entity}}
+--
+-- Struttura della tabella `{{lowercase name}}`
+--
+
+CREATE TABLE IF NOT EXISTS `{{lowercase name}}` ({{#_attrs}}
+	`{{name}}` {{resolveSQLtype type}} {{#required}} NOT NULL{{/required}}{{#unique}} UNIQUE{{/unique}},{{/_attrs}}
+	
+	-- RELAZIONI{{#_relations}}{{#equal _ent1.name ../name}}{{#equal type '1:m'}}
+	`{{name}}` int(11) {{#required}} NOT NULL{{/required}} REFERENCES {{lowercase _ent2.name}}(_id),{{/equal}}{{/equal}}{{/_relations}}
+
+	`_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT 
+
+);
+
+{{#equal (lowercase name) 'user'}}
+
+-- Security
+
+INSERT INTO `{{lowercase ../db.name}}`.`user` (`username`, `password`, `_id`) VALUES ('admin', '1a1dc91c907325c69271ddf0c944bc72', 1);
+
+CREATE TABLE IF NOT EXISTS `roles` (
+	`role` varchar(30) ,
+	
+	-- RELAZIONI
+
+	`_user` int(11)  NOT NULL REFERENCES user(_id),
+	`_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT 
+
+);
+INSERT INTO `{{lowercase ../db.name}}`.`roles` (`role`, `_user`, `_id`) VALUES ('ADMIN', '1', 1);
+
+{{/equal}}
+
+
+{{#each _relations}}{{#equal _ent1.name ../name}}{{#equal type 'm:m'}}
+-- relation m:m {{name}} {{_ent1.name}} - {{_ent2.name}}
+CREATE TABLE IF NOT EXISTS `{{_ent1.name}}_{{name}}` (
+    `_id` int(11) NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    `id_{{_ent1.name}}` int(11)  NOT NULL REFERENCES {{_ent1.name}}(_id),
+    `id_{{_ent2.name}}` int(11)  NOT NULL REFERENCES {{_ent2.name}}(_id)
+);
+{{/equal}}{{/equal}}{{/each}}
+
+{{/db._entity}}
+
